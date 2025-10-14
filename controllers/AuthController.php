@@ -1,0 +1,151 @@
+<?php
+require_once __DIR__ . '/../models/Usuario.php';
+require_once __DIR__ . '/../models/Rol.php';
+require_once __DIR__ . '/../helpers/functions.php';
+
+class AuthController {
+    private $usuarioModel;
+    private $rolModel;
+    
+    public function __construct() {
+        $this->usuarioModel = new Usuario();
+        $this->rolModel = new Rol();
+    }
+    
+    /**
+     * Mostrar formulario de login
+     */
+    public function mostrarLogin() {
+        if (estaAutenticado()) {
+            redirect('admin/usuarios');
+        }
+        require_once __DIR__ . '/../views/auth/login.php';
+    }
+    
+    /**
+     * Procesar login
+     */
+    public function login() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            redirect('login');
+        }
+        
+        $correo = limpiarInput($_POST['correo'] ?? '');
+        $clave = $_POST['clave'] ?? '';
+        
+        if (empty($correo) || empty($clave)) {
+            setMensaje('Por favor complete todos los campos', 'error');
+            redirect('login');
+        }
+        
+        $resultado = $this->usuarioModel->login($correo, $clave);
+        
+        if ($resultado['success']) {
+            $_SESSION['usuario_id'] = $resultado['usuario']['id'];
+            $_SESSION['usuario_nombre'] = $resultado['usuario']['nombre'];
+            $_SESSION['usuario_correo'] = $resultado['usuario']['correo'];
+            $_SESSION['usuario_rol'] = $resultado['usuario']['rol_nombre'];
+            
+            setMensaje('Bienvenido ' . $resultado['usuario']['nombre'], 'success');
+            redirect('admin/usuarios');
+        } else {
+            setMensaje($resultado['message'], 'error');
+            redirect('login');
+        }
+    }
+    
+    /**
+     * Mostrar formulario de registro
+     */
+    public function mostrarRegistro() {
+        if (estaAutenticado()) {
+            redirect('admin/usuarios');
+        }
+        
+        $roles = $this->rolModel->obtenerTodos();
+        require_once __DIR__ . '/../views/auth/registro.php';
+    }
+    
+    /**
+     * Procesar registro
+     */
+    public function registro() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            redirect('registro');
+        }
+        
+        $this->usuarioModel->correo = limpiarInput($_POST['correo'] ?? '');
+        $this->usuarioModel->nombre = limpiarInput($_POST['nombre'] ?? '');
+        $this->usuarioModel->apellido = limpiarInput($_POST['apellido'] ?? '');
+        $this->usuarioModel->telefono = limpiarInput($_POST['telefono'] ?? '');
+        $this->usuarioModel->direccion = limpiarInput($_POST['direccion'] ?? '');
+        $this->usuarioModel->rol_id = $_POST['rol_id'] ?? 2; // Por defecto rol usuario
+        $this->usuarioModel->clave = $_POST['clave'] ?? '';
+        
+        // Validaciones básicas
+        if (empty($this->usuarioModel->correo) || empty($this->usuarioModel->nombre) || 
+            empty($this->usuarioModel->apellido) || empty($this->usuarioModel->clave)) {
+            setMensaje('Por favor complete todos los campos obligatorios', 'error');
+            redirect('registro');
+        }
+        
+        if (!filter_var($this->usuarioModel->correo, FILTER_VALIDATE_EMAIL)) {
+            setMensaje('El correo electrónico no es válido', 'error');
+            redirect('registro');
+        }
+        
+        $resultado = $this->usuarioModel->crear();
+        
+        if ($resultado['success']) {
+            setMensaje('Registro exitoso. Por favor inicia sesión', 'success');
+            redirect('login');
+        } else {
+            setMensaje($resultado['message'], 'error');
+            redirect('registro');
+        }
+    }
+    
+    /**
+     * Cerrar sesión
+     */
+    public function logout() {
+    // Limpiar variables de sesión
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        $_SESSION = [];
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params['path'], $params['domain'],
+                $params['secure'], $params['httponly']
+            );
+        }
+        session_destroy();
+    }
+
+    // Iniciar nueva sesión para poder setear el mensaje
+    session_start();
+    setMensaje('Sesión cerrada exitosamente', 'success');
+    redirect('login');
+}
+public function forceLogout() {
+    // Limpia y destruye sesión de forma segura
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        // eliminar variables de sesión
+        $_SESSION = [];
+        // destruir cookie de sesión en el cliente
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params["path"], $params["domain"],
+                $params["secure"], $params["httponly"]
+            );
+        }
+        session_destroy();
+    }
+    // Redirigir a login (sin usar setMensaje aquí porque la sesión fue destruida)
+    header('Location: ' . baseUrl('login'));
+    exit;
+}
+
+}
+?>

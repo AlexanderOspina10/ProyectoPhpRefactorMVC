@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <!-- Favicons -->
+    <link href="<?php echo baseUrl('img/logo.png'); ?>" rel="icon">
     <title><?php echo $titulo ?? 'Fashion Store - Admin'; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
@@ -12,7 +14,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="<?php echo baseUrl('admin'); ?>">
+            <a class="navbar-brand" href="<?php echo baseUrl('admin/dashboard'); ?>">
                 <i class="bi bi-shop"></i> Fashion Store
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -21,7 +23,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="<?php echo baseUrl('admin'); ?>">
+                        <a class="nav-link" href="<?php echo baseUrl('admin/dashboard'); ?>">
                             <i class="bi bi-speedometer2"></i> Dashboard
                         </a>
                     </li>
@@ -39,6 +41,17 @@
                     <li class="nav-item">
                         <a class="nav-link" href="<?php echo baseUrl('admin/pedidos'); ?>">
                             <i class="bi bi-card-checklist"></i> Pedidos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?php echo baseUrl('admin/contacto'); ?>">
+                            <i class="bi bi-envelope"></i> Mensajes
+                            <?php 
+                            // Mostrar badge si hay mensajes no leídos
+                            if (isset($mensajesNoLeidos) && $mensajesNoLeidos > 0): 
+                            ?>
+                                <span class="badge bg-danger"><?php echo $mensajesNoLeidos; ?></span>
+                            <?php endif; ?>
                         </a>
                     </li>
                 </ul>

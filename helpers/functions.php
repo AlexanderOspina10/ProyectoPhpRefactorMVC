@@ -263,4 +263,129 @@ function diasEntre($fecha1, $fecha2) {
         return 0;
     }
 }
+
+/**
+ * Formatear fecha en formato simple (solo fecha, sin hora)
+ */
+function fechaFormatoHumano($fecha) {
+    $timestamp = strtotime($fecha);
+    
+    // Si es hoy
+    if (date('Y-m-d', $timestamp) === date('Y-m-d')) {
+        return 'Hoy';
+    }
+    
+    // Si fue ayer
+    if (date('Y-m-d', $timestamp) === date('Y-m-d', strtotime('-1 day'))) {
+        return 'Ayer';
+    }
+    
+    // Para cualquier otra fecha, mostrar fecha completa
+    return date('d/m/Y', $timestamp); // Formato: 15/03/2024
+}
+
+/**
+ * Formatear fecha completa (solo fecha, sin hora)
+ */
+function fechaFormatoCompleto($fecha) {
+    $timestamp = strtotime($fecha);
+    
+    // Nombres de meses en español
+    $meses = [
+        1 => 'enero', 2 => 'febrero', 3 => 'marzo', 4 => 'abril',
+        5 => 'mayo', 6 => 'junio', 7 => 'julio', 8 => 'agosto',
+        9 => 'septiembre', 10 => 'octubre', 11 => 'noviembre', 12 => 'diciembre'
+    ];
+    
+    $dia = date('d', $timestamp);
+    $mes = $meses[date('n', $timestamp)];
+    $anio = date('Y', $timestamp);
+    
+    return $dia . ' de ' . $mes . ' de ' . $anio; // Ej: "15 de marzo de 2024"
+}
+
+/**
+ * Obtener color Bootstrap según estado del pedido
+ */
+function obtenerColorEstado($estado) {
+    switch ($estado) {
+        case 'pendiente':
+            return 'warning';
+        case 'procesando':
+            return 'info';
+        case 'enviado':
+            return 'primary';
+        case 'completado':
+            return 'success';
+        case 'cancelado':
+            return 'danger';
+        default:
+            return 'secondary';
+    }
+}
+
+/**
+ * Obtener nombre del estado del pedido en español
+ */
+function nombreEstadoPedido($estado) {
+    $estados = [
+        'pendiente' => 'Pendiente',
+        'procesando' => 'Procesando',
+        'enviado' => 'Enviado',
+        'completado' => 'Completado',
+        'cancelado' => 'Cancelado'
+    ];
+    return $estados[$estado] ?? ucfirst($estado);
+}
+
+/**
+ * Validar que una fecha sea válida
+ */
+function esFechaValida($fecha, $formato = 'Y-m-d H:i:s') {
+    $d = DateTime::createFromFormat($formato, $fecha);
+    return $d && $d->format($formato) === $fecha;
+}
+
+/**
+ * Formatear número con separadores de miles
+ */
+function formatearNumero($numero, $decimales = 0) {
+    return number_format($numero, $decimales, ',', '.');
+}
+
+/**
+ * Acortar texto a una longitud específica
+ */
+function acortarTexto($texto, $longitud = 100, $sufijo = '...') {
+    if (strlen($texto) <= $longitud) {
+        return $texto;
+    }
+    return substr($texto, 0, $longitud) . $sufijo;
+}
+
+/**
+ * Generar un código aleatorio
+ */
+function generarCodigo($longitud = 8) {
+    $caracteres = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $codigo = '';
+    for ($i = 0; $i < $longitud; $i++) {
+        $codigo .= $caracteres[rand(0, strlen($caracteres) - 1)];
+    }
+    return $codigo;
+}
+
+/**
+ * Obtener la fecha actual en formato para base de datos
+ */
+function fechaActual() {
+    return date('Y-m-d H:i:s');
+}
+
+/**
+ * Obtener solo la fecha (sin hora) en formato para base de datos
+ */
+function fechaHoy() {
+    return date('Y-m-d');
+}
 ?>

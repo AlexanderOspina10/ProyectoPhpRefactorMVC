@@ -7,6 +7,7 @@ require_once __DIR__ . '/../controllers/DashboardController.php';
 require_once __DIR__ . '/../controllers/PublicProductoController.php';
 require_once __DIR__ . '/../controllers/PedidosUsuarioController.php';
 require_once __DIR__ . '/../controllers/PerfilUsuarioController.php';
+require_once __DIR__ . '/../controllers/ContactoController.php';
 require_once __DIR__ . '/../controllers/CarritoController.php';
 
 /**
@@ -92,8 +93,9 @@ $router->get('force-logout', 'AuthController', 'forceLogout');
 // RUTAS DEL ADMIN
 // ============================================
 
-// Dashboard
+// Dashboard - AGREGAR AMBAS RUTAS
 $router->get('admin', 'DashboardController', 'index');
+$router->get('admin/dashboard', 'DashboardController', 'index'); // Agregar esta línea
 
 // Usuarios
 $router->get('admin/usuarios', 'UsuarioController', 'index');
@@ -148,6 +150,20 @@ $router->get('pedidosUsuario/ver/{id}', 'PedidosUsuarioController', 'ver');
 $router->get('perfilUsuario/perfil', 'PerfilUsuarioController', 'perfil');
 $router->post('perfilUsuario/actualizar', 'PerfilUsuarioController', 'actualizar');
 $router->post('perfilUsuario/cambiarClave', 'PerfilUsuarioController', 'cambiarClave');
+
+// ============================================
+// RUTAS DE CONTACTO (CORREGIDAS)
+// ============================================
+
+// Rutas de contacto público
+$router->get('contacto', 'ContactoController', 'index');
+$router->post('contacto/enviar', 'ContactoController', 'enviarMensaje');
+
+// Rutas de administración para mensajes de contacto
+$router->get('admin/contacto', 'AdminContactoController', 'index');
+$router->get('admin/contacto/ver/{id}', 'AdminContactoController', 'ver');
+$router->get('admin/contacto/eliminar/{id}', 'AdminContactoController', 'eliminar');
+$router->get('admin/contacto/marcar-leido/{id}', 'AdminContactoController', 'marcarLeido');
 
 // Resolver la ruta
 $router->resolve();

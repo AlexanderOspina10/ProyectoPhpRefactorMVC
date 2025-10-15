@@ -34,7 +34,7 @@
                 <tr>
                     <td><?= $p['id'] ?></td>
                     <td><?= e($p['usuario_nombre'] . ' ' . $p['usuario_apellido']) ?></td>
-                    <td>$ <?= number_format($p['total'],2) ?></td>
+                    <td>$ <?= number_format($p['total'],0) ?></td>
                     <td><?= ucfirst($p['estado']) ?></td>
                     <td><?= date('d/m/Y', strtotime($p['created_at'])) ?></td>
                     <td>

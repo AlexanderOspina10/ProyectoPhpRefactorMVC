@@ -39,7 +39,11 @@ $q = $q ?? '';
             <i class="bi bi-bullseye text-primary fs-1"></i>
           </div>
           <h3 class="h4 mb-3">MISIÓN</h3>
-          <p class="fst-italic text-muted">Ofrecer a los clientes una experiencia de compra en línea moderna y confiable, donde encuentren productos de moda con calidad y estilo, asegurando una interfaz intuitiva y amigable.</p>
+          <p class="fst-italic text-muted">Brindar una herramienta tecnológica moderna y eficiente que permita la gestión
+           integral de ventas y productos de ropa mediante una plataforma web, facilitando la
+           administración del inventario, la atención a clientes y la realización de transacciones en
+            línea. El sistema busca optimizar los procesos comerciales, mejorar la experiencia de compra
+           y fortalecer la presencia digital de la tienda Fashion Store.</p>
         </div>
       </div>
       <div class="col-lg-6 col-md-6 content text-center" data-aos="fade-up" data-aos-delay="200">
@@ -48,7 +52,11 @@ $q = $q ?? '';
             <i class="bi bi-eye text-primary fs-1"></i>
           </div>
           <h3 class="h4 mb-3">VISIÓN</h3>
-          <p class="fst-italic text-muted">Consolidar a Fashion Store como una tienda virtual reconocida en el mercado digital, destacándose por la innovación, el diseño y la satisfacción de sus clientes.</p>
+          <p class="fst-italic text-muted">Convertirse en un sistema de información líder en el comercio electrónico de moda,
+           reconocido por su innovación, facilidad de uso y seguridad.
+           A mediano plazo, Fashion Store aspira a consolidarse como una plataforma que
+           promueva el crecimiento digital de los negocios de ropa, impulsando el comercio virtual
+           y el desarrollo tecnológico local.</p>
         </div>
       </div>
       <div class="col-lg-6 col-md-6 content text-center" data-aos="fade-up" data-aos-delay="300">
@@ -57,7 +65,10 @@ $q = $q ?? '';
             <i class="bi bi-bullseye text-primary fs-1"></i>
           </div>
           <h3 class="h4 mb-3">OBJETIVO GENERAL</h3>
-          <p class="fst-italic text-muted">Desarrollar un sistema de Informacion funcional para la tienda Fashion Store que permita mostrar los productos de manera atractiva y accesible, facilitando la experiencia de navegación del usuario.</p>
+          <p class="fst-italic text-muted">Desarrollar un sistema de información web para la gestión y venta de productos de
+          moda, que permita registrar, consultar, modificar y eliminar información de usuarios y
+         productos, realizar ventas mediante un carrito de compras, utilizando tecnologías como
+         PHP, MySQL, HTML, CSS y Bootstrap.</p>
         </div>
       </div>
       <div class="col-lg-6 col-md-6 content text-center" data-aos="fade-up" data-aos-delay="400">
@@ -66,7 +77,23 @@ $q = $q ?? '';
             <i class="bi bi-list-check text-primary fs-1"></i>
           </div>
           <h3 class="h4 mb-3">OBJETIVO ESPECIFICO</h3>
-          <p class="fst-italic text-muted">Diseñar una interfaz visual clara y atractiva mediante el uso de HTML y CSS. Componer la estructura de los productos para facilitar la navegación del usuario. Construir la conexión con una base de datos MySQL para gestionar la información.</p>
+          <ul>
+            <li class="fst-italic text-muted">
+               Diseñar la base de datos en MySQL para almacenar y organizar de manera
+              estructurada la información de productos, usuarios y ventas de la tienda.
+            </li>
+            <li class="fst-italic text-muted">
+              Implementar el sistema web utilizando PHP como lenguaje de programación.
+            </li>
+            <li class="fst-italic text-muted">
+              Desarrollar la interfaz de usuario con HTML, CSS y Bootstrap,
+              garantizando una navegación intuitiva, responsiva y visualmente atractiva.
+            </li>
+            <li class="fst-italic text-muted">
+              Incorporar funcionalidades de venta en línea mediante un carrito de compras
+              que permita seleccionar, modificar y confirmar productos.
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -453,7 +480,7 @@ $q = $q ?? '';
       <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
         <div class="team-member text-center">
           <div class="member-photo mb-3 mx-auto rounded-circle overflow-hidden">
-            <img src="<?php echo baseUrl('img/Mariana.png'); ?>" class="img-fluid" alt="Mariana Maldonado">
+            <img src="<?php echo baseUrl('img/Marianamaldonado.jpg'); ?>" class="img-fluid" alt="Mariana Maldonado">
           </div>
           <div class="member-info">
             <h4 class="fw-bold mb-1">Mariana Maldonado</h4>
@@ -489,7 +516,7 @@ $q = $q ?? '';
       <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
         <div class="testimonial-item text-center p-4 rounded-3 h-100 bg-white bg-opacity-10">
           <div class="testimonial-img mb-3 mx-auto rounded-circle overflow-hidden">
-            <img src="<?php echo baseUrl('img/testimonials/Mariana.jpeg'); ?>" class="img-fluid" alt="Mariana">
+            <img src="<?php echo baseUrl('img/testimonials/Marianita.jpg'); ?>" class="img-fluid" alt="100%" height="100%">
           </div>
           <h4 class="fw-bold mb-2">Mariana</h4>
           <div class="stars mb-3">
@@ -506,7 +533,7 @@ $q = $q ?? '';
       <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
         <div class="testimonial-item text-center p-4 rounded-3 h-100 bg-white bg-opacity-10">
           <div class="testimonial-img mb-3 mx-auto rounded-circle overflow-hidden">
-            <img src="<?php echo baseUrl('img/testimonials/esteban2.jpeg'); ?>" class="img-fluid" alt="Esteban">
+            <img src="<?php echo baseUrl('img/testimonials/esteban2.jpeg'); ?>" class="img-fluid" alt="">
           </div>
           <h4 class="fw-bold mb-2">Esteban</h4>
           <div class="stars mb-3">
@@ -520,18 +547,18 @@ $q = $q ?? '';
         </div>
       </div>
       
-      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+      <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
         <div class="testimonial-item text-center p-4 rounded-3 h-100 bg-white bg-opacity-10">
           <div class="testimonial-img mb-3 mx-auto rounded-circle overflow-hidden">
-            <img src="<?php echo baseUrl('img/testimonials/michel2.jpeg'); ?>" class="img-fluid" alt="Michel">
-          </div>
+            <img src="<?php echo baseUrl('img/testimonials/michel2.jpeg'); ?>" class="img-fluid" alt="50%" height="50%">
+          </div><br>
           <h4 class="fw-bold mb-2">Michel</h4>
           <div class="stars mb-3">
             <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
           </div>
           <p class="mb-0">
             <i class="bi bi-quote quote-icon-left"></i>
-            Es una persona cariñosa y responsable, hace todo con amor y es noble.
+            Es una persona cariñosa y responsable, siempre está dispuesta a ayudar a los demás y es muy creativa.
             <i class="bi bi-quote quote-icon-right"></i>
           </p>
         </div>
@@ -539,6 +566,7 @@ $q = $q ?? '';
     </div>
   </div>
 </section>
+
 
 <!-- Sección de Contacto -->
 <section id="Contacto" class="contact-section py-5 bg-light">
@@ -588,7 +616,12 @@ $q = $q ?? '';
       
       <div class="col-lg-8">
         <div class="contact-form bg-white rounded-3 p-4 p-md-5 shadow-sm">
-          <form action="forms/contact.php" method="post" role="form" class="php-email-form">
+          <form action="<?php echo baseUrl('contacto/enviar'); ?>" method="post" role="form" class="php-email-form">
+            <!-- Agregar token CSRF si lo usas -->
+            <?php if (function_exists('generarTokenCSRF')): ?>
+              <input type="hidden" name="csrf_token" value="<?php echo generarTokenCSRF(); ?>">
+            <?php endif; ?>
+            
             <div class="row">
               <div class="col-md-6 form-group mb-3">
                 <input type="text" name="name" class="form-control rounded-pill" id="Nombre" placeholder="Nombre" required>

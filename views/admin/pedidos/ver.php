@@ -2,7 +2,7 @@
 <p><strong>Usuario:</strong> <?= e($pedido['usuario_nombre'].' '.$pedido['usuario_apellido']) ?></p>
 <p><strong>Dirección:</strong> <?= e($pedido['direccion_envio']) ?></p>
 <p><strong>Teléfono:</strong> <?= e($pedido['telefono_envio']) ?></p>
-<p><strong>Total:</strong> $ <?= number_format($pedido['total'],2) ?></p>
+<p><strong>Total:</strong> $ <?= number_format($pedido['total'],0) ?></p>
 <p><strong>Estado:</strong> <?= ucfirst($pedido['estado']) ?></p>
 
 <h5>Detalle de productos</h5>
@@ -20,8 +20,8 @@
         <tr>
             <td><?= e($item['producto_nombre']) ?></td>
             <td><?= $item['cantidad'] ?></td>
-            <td>$ <?= number_format($item['precio_unitario'],2) ?></td>
-            <td>$ <?= number_format($item['precio_unitario'] * $item['cantidad'],2) ?></td>
+            <td>$ <?= number_format($item['precio_unitario'],0) ?></td>
+            <td>$ <?= number_format($item['precio_unitario'] * $item['cantidad'],0) ?></td>
         </tr>
         <?php endforeach; ?>
     </tbody>
@@ -37,4 +37,7 @@
         <?php endforeach; ?>
     </select>
     <button class="btn btn-primary btn-sm">Actualizar</button>
+     <a href="<?php echo baseUrl('admin/pedidos'); ?>" class="btn btn-primary btn-sm">
+                            <i class="bi bi-x"></i> Cancelar
+                        </a>
 </form>

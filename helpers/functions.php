@@ -16,18 +16,14 @@ function estaAutenticado() {
 function obtenerBaseUrl() {
     $protocolo = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
     $host = $_SERVER['HTTP_HOST'];
-
-    // Directorio donde está el front controller (p. ej. /fashion_store/public)
     $scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
     $scriptDir = rtrim($scriptDir, '/');
-
     $path = ($scriptDir === '/' || $scriptDir === '\\') ? '' : $scriptDir;
-
     return $protocolo . '://' . $host . $path . '/';
 }
 
 /**
- * Generar una URL relativa (base + ruta)
+ * Generar una URL relativa
  */
 function baseUrl($ruta = '') {
     $ruta = ltrim($ruta, '/');
@@ -39,23 +35,19 @@ function baseUrl($ruta = '') {
 }
 
 /**
- * Redirigir a una ruta específica
+ * Redirigir a una ruta
  */
 function redirect($ruta = '') {
-    // Aceptar URLs absolutas
     if (preg_match('#^https?://#i', $ruta)) {
         header("Location: $ruta");
         exit;
     }
-
     $ruta = ltrim($ruta, '/');
-
     if ($ruta === '') {
         $url = obtenerBaseUrl();
     } else {
         $url = rtrim(obtenerBaseUrl(), '/') . '/' . $ruta;
     }
-
     header("Location: " . $url);
     exit;
 }
@@ -132,10 +124,8 @@ function requiereAutenticacion() {
  */
 function requiereRol($rolesPermitidos) {
     requiereAutenticacion();
-
     $rolesPermitidos = is_array($rolesPermitidos) ? $rolesPermitidos : [$rolesPermitidos];
     $rolUsuario = $_SESSION['usuario_rol'] ?? '';
-
     if (!in_array($rolUsuario, $rolesPermitidos)) {
         setMensaje('No tienes permiso para acceder a esta sección', 'error');
         redirect('login');
@@ -178,5 +168,99 @@ function verificarTokenCSRF($token) {
  */
 function campoTokenCSRF() {
     echo '<input type="hidden" name="csrf_token" value="' . generarTokenCSRF() . '">';
+}
+
+/**
+ * Subir y validar una imagen desde $_FILES
+ */
+function subirImagen($file, $subfolder = 'uploads/products', $maxSizeBytes = 2097152) {
+    if (!isset($file) || $file['error'] === UPLOAD_ERR_NO_FILE) {
+        return ['success' => false, 'filename' => null, 'message' => 'No se subió ninguna imagen'];
+    }
+
+    if ($file['error'] !== UPLOAD_ERR_OK) {
+        return ['success' => false, 'filename' => null, 'message' => 'Error al subir la imagen'];
+    }
+
+    if ($file['size'] > $maxSizeBytes) {
+        return ['success' => false, 'filename' => null, 'message' => 'La imagen es demasiado grande (máx 2MB)'];
+    }
+
+    $allowedMime = ['image/jpeg' => 'jpg', 'image/jpg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mime = finfo_file($finfo, $file['tmp_name']);
+    finfo_close($finfo);
+
+    if (!isset($allowedMime[$mime])) {
+        return ['success' => false, 'filename' => null, 'message' => 'Formato de imagen no permitido. Usa JPG, PNG o WEBP'];
+    }
+
+    $publicPath = rtrim(__DIR__ . '/../public', '/\\') . '/';
+    $destFolder = $publicPath . trim($subfolder, '/\\') . '/';
+
+    if (!is_dir($destFolder)) {
+        if (!mkdir($destFolder, 0755, true)) {
+            return ['success' => false, 'filename' => null, 'message' => 'No se pudo crear carpeta para imágenes'];
+        }
+    }
+
+    $ext = $allowedMime[$mime];
+    $basename = bin2hex(random_bytes(8)) . '_' . time();
+    $filename = $basename . '.' . $ext;
+    $destPath = $destFolder . $filename;
+
+    if (!move_uploaded_file($file['tmp_name'], $destPath)) {
+        return ['success' => false, 'filename' => null, 'message' => 'No se pudo guardar la imagen en el servidor'];
+    }
+
+    $relative = trim($subfolder, '/\\') . '/' . $filename;
+    return ['success' => true, 'filename' => $relative, 'message' => 'Imagen subida correctamente'];
+}
+
+/**
+ * Formato de moneda colombiana
+ */
+function formatearPrecio($precio) {
+    return '$' . number_format($precio, 0, ',', '.');
+}
+
+/**
+ * Obtener nombre del rol con mayúscula
+ */
+function nombreRol($rol) {
+    $roles = [
+        'admin' => 'Administrador',
+        'vendedor' => 'Vendedor',
+        'cliente' => 'Cliente',
+        'usuario' => 'Usuario'
+    ];
+    return $roles[$rol] ?? ucfirst($rol);
+}
+
+/**
+ * Validar rango de fechas
+ */
+function esRangoFechaValido($fecha_inicio, $fecha_fin) {
+    try {
+        $inicio = new DateTime($fecha_inicio);
+        $fin = new DateTime($fecha_fin);
+        return $inicio <= $fin;
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
+/**
+ * Obtener diferencia en días entre dos fechas
+ */
+function diasEntre($fecha1, $fecha2) {
+    try {
+        $f1 = new DateTime($fecha1);
+        $f2 = new DateTime($fecha2);
+        $diff = $f1->diff($f2);
+        return $diff->days;
+    } catch (Exception $e) {
+        return 0;
+    }
 }
 ?>

@@ -17,16 +17,22 @@ class UsuarioController {
      * Listar todos los usuarios
      */
     public function index() {
-        $usuarios = $this->usuarioModel->obtenerTodos();
+        $q = isset($_GET['q']) ? trim($_GET['q']) : '';
+        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 5; // Cambiado a 5 por defecto
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $offset = ($page - 1) * $limit;
+
+        $totalUsuarios = $this->usuarioModel->contarTodos($q ?: null);
+        $usuarios = $this->usuarioModel->obtenerTodos($q ?: null, $limit, $offset);
+
+        $totalPaginas = ceil($totalUsuarios / $limit);
+
         $titulo = 'Gestión de Usuarios';
         require_once __DIR__ . '/../views/admin/layout/header.php';
         require_once __DIR__ . '/../views/admin/usuarios/index.php';
         require_once __DIR__ . '/../views/admin/layout/footer.php';
     }
-    
-    /**
-     * Mostrar formulario de creación
-     */
+
     public function crear() {
         $roles = $this->rolModel->obtenerTodos();
         $titulo = 'Crear Nuevo Usuario';
@@ -35,15 +41,11 @@ class UsuarioController {
         require_once __DIR__ . '/../views/admin/layout/footer.php';
     }
     
-    /**
-     * Guardar nuevo usuario
-     */
     public function guardar() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             redirect('admin/usuarios/crear');
         }
         
-        // Validar CSRF
         if (!isset($_POST['csrf_token']) || !verificarTokenCSRF($_POST['csrf_token'])) {
             setMensaje('Token de seguridad inválido', 'error');
             redirect('admin/usuarios/crear');
@@ -57,7 +59,6 @@ class UsuarioController {
         $this->usuarioModel->rol_id = (int)($_POST['rol_id'] ?? 2);
         $this->usuarioModel->clave = $_POST['clave'] ?? '';
         
-        // Validaciones
         if (empty($this->usuarioModel->correo) || empty($this->usuarioModel->nombre) || 
             empty($this->usuarioModel->apellido) || empty($this->usuarioModel->telefono) ||
             empty($this->usuarioModel->direccion) || empty($this->usuarioModel->clave)) {
@@ -86,9 +87,6 @@ class UsuarioController {
         }
     }
     
-    /**
-     * Mostrar formulario de edición
-     */
     public function editar($id) {
         $usuario = $this->usuarioModel->obtenerPorId($id);
         
@@ -104,15 +102,11 @@ class UsuarioController {
         require_once __DIR__ . '/../views/admin/layout/footer.php';
     }
     
-    /**
-     * Actualizar usuario
-     */
     public function actualizar() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             redirect('admin/usuarios');
         }
         
-        // Validar CSRF
         if (!isset($_POST['csrf_token']) || !verificarTokenCSRF($_POST['csrf_token'])) {
             setMensaje('Token de seguridad inválido', 'error');
             redirect('admin/usuarios');
@@ -133,7 +127,6 @@ class UsuarioController {
         $this->usuarioModel->rol_id = (int)($_POST['rol_id'] ?? 2);
         $this->usuarioModel->activo = (int)($_POST['activo'] ?? 1);
         
-        // Validaciones
         if (empty($this->usuarioModel->correo) || empty($this->usuarioModel->nombre) || 
             empty($this->usuarioModel->apellido) || empty($this->usuarioModel->telefono) ||
             empty($this->usuarioModel->direccion)) {
@@ -162,9 +155,6 @@ class UsuarioController {
         }
     }
     
-    /**
-     * Eliminar usuario
-     */
     public function eliminar($id) {
         $usuario = $this->usuarioModel->obtenerPorId($id);
         

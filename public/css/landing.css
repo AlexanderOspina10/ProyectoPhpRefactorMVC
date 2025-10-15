@@ -1,0 +1,114 @@
+/* landing-styles.css
+   Estilos personalizados para la landing de Fashion Store
+   Conserva el color morado como color principal y respeta la estructura HTML/Bootstrap existente.
+   Instrucciones: enlazar este archivo después de Bootstrap para sobreescribir estilos.
+*/
+
+:root{
+  --brand: #6f42c1; /* morado principal */
+  --brand-700: #5a359f;
+  --accent: #9b6fe0; /* degradado claro */
+  --muted: #6c6c6c;
+  --glass: rgba(255,255,255,0.06);
+}
+
+/* Tipografía moderna */
+html,body{font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;}
+
+/* --- HERO --- */
+.hero-section{
+  background: linear-gradient(120deg, rgba(111,66,193,0.12), rgba(155,111,224,0.08)), url('/img/hero-bg.jpg') center/cover no-repeat;
+  min-height: 66vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.hero-overlay{
+  background: linear-gradient(180deg, rgba(111,66,193,0.6), rgba(111,66,193,0.35));
+  mix-blend-mode: multiply;
+  opacity: 0.95;
+}
+.hero-section .display-4{color: #fff; text-shadow: 0 6px 20px rgba(16,12,36,0.45);}
+.hero-section .lead{color: rgba(255,255,255,0.95);}
+.btn-primary{
+  background: linear-gradient(90deg, var(--brand), var(--brand-700));
+  border: none;
+  box-shadow: 0 6px 18px rgba(111,66,193,0.18);
+}
+.btn-outline-light{border-color: rgba(255,255,255,0.35); color: #fff;}
+
+/* Rounded pill buttons consistent */
+.btn-lg.rounded-pill{padding: .8rem 1.6rem; font-weight:600;}
+
+/* --- INFO CARDS --- */
+.info-card{transition: transform .28s ease, box-shadow .28s ease;}
+.info-card:hover{transform: translateY(-8px); box-shadow: 0 12px 40px rgba(37,17,82,0.08);} 
+.info-icon i{color: var(--brand);}
+.info-card h3{color:#2b2b2b}
+.info-card p{color:var(--muted)}
+
+/* --- SECTION TITLES --- */
+.section-title h2{color:#211; font-weight:700}
+.section-subtitle .description-title{color:var(--brand); font-weight:600}
+
+/* --- WHY US CARDS --- */
+.card-item{border: 1px solid rgba(111,66,193,0.06); transition: transform .25s ease;}
+.card-item:hover{transform: translateY(-6px); box-shadow: 0 18px 45px rgba(111,66,193,0.06);} 
+.number-badge{display:inline-block; padding:.55rem .8rem; border-radius:10px; background:linear-gradient(90deg,var(--accent),var(--brand)); color:#fff; font-weight:700}
+
+/* --- SPECIALS / TABS --- */
+.specials-tabs .nav-link{color:var(--muted); border-radius:10px; padding:.75rem 1rem; margin-bottom:.5rem}
+.specials-tabs .nav-link.active{background: linear-gradient(90deg,var(--brand),var(--brand-700)); color:#fff; box-shadow: 0 8px 30px rgba(111,66,193,0.12)}
+.specials-content .details h3{color:#212121}
+
+/* --- PRODUCT CARDS --- */
+.product-card{overflow:hidden; border-radius:12px;}
+.product-image-container{height:220px;background:#f8f8fb; display:flex; align-items:center; justify-content:center}
+.product-image{object-fit:cover; width:100%; height:100%; transition: transform .5s ease;}
+.product-card:hover .product-image{transform: scale(1.06);}
+.product-overlay{background: linear-gradient(180deg, rgba(16,10,38,0.0), rgba(16,10,38,0.25)); opacity:0; transition: opacity .22s ease;}
+.product-card:hover .product-overlay{opacity:1}
+.product-overlay .btn{opacity:0.98}
+.product-placeholder{height:220px}
+.card-title{color:#222}
+.card-text{color:var(--muted)}
+.text-primary{color:var(--brand) !important}
+
+/* --- PAGINATION --- */
+.pagination .page-link{border-radius:50px; padding:.5rem .75rem}
+.page-item.active .page-link{background: linear-gradient(90deg,var(--brand),var(--brand-700)); border:none; color:#fff}
+
+/* --- GALLERY --- */
+.gallery-item img{transition: transform .35s ease;}
+.gallery-item:hover img{transform: scale(1.03)}
+
+/* --- TEAM --- */
+.team-member .member-photo{width:130px; height:130px}
+.team-member h4{font-size:1.05rem}
+.team-member .text-primary{color:var(--brand) !important}
+.social-link{display:inline-grid; place-items:center; width:40px; height:40px; border-radius:8px; background:transparent; border:1px solid rgba(255,255,255,0.06); margin:0 .2rem}
+
+/* --- TESTIMONIALS (sobre fondo morado) --- */
+.testimonials-section{background: linear-gradient(180deg,var(--brand-700),var(--brand)); color:#fff}
+.testimonials-overlay{background: linear-gradient(180deg, rgba(22,10,43,0.35), rgba(22,10,43,0.25));}
+.testimonial-item{background: rgba(255,255,255,0.06); backdrop-filter: blur(4px);}
+.testimonial-item h4, .testimonial-item p{color:#fff}
+.stars i{color: #ffd166}
+
+/* --- CONTACT --- */
+.contact-form .form-control{border-radius:50px}
+.contact-form .form-control:focus{box-shadow: 0 8px 30px rgba(111,66,193,0.12); border-color: var(--brand)}
+
+/* --- RESPONSIVE tweaks --- */
+@media (max-width: 767px){
+  .hero-section{min-height:56vh; padding-top:3rem; padding-bottom:3rem}
+  .product-image-container, .product-placeholder{height:180px}
+}
+
+/* Small accessibility contrast helpers */
+.btn-primary:focus{outline: 3px solid rgba(155,111,224,0.25); outline-offset:2px}
+
+/* Utilities */
+.z-1{z-index:1}
+
+/* End */

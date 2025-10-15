@@ -58,7 +58,19 @@ class Usuario {
                 'message' => 'El correo electrónico ya está registrado'
             ];
         }
-        
+        if ($this->telefonoExiste($this->telefono)) {
+            return [
+                'success' => false,
+                'message' => 'El teléfono ya está registrado'
+            ];
+        }
+        if (strlen($this->clave) < 6) {
+            return [
+                'success' => false,
+                'message' => 'La contraseña debe tener al menos 6 caracteres'
+            ];
+        }
+                
         if (strlen($this->clave) < 6) {
             return [
                 'success' => false,
@@ -100,9 +112,19 @@ class Usuario {
                 'usuario_id' => $this->conexion->insert_id
             ];
         } else {
+            
+            $errno = $this->conexion->errno;
+            $errorMessage = $this->conexion->error;
+            if ($errno == 1062) {
+                return [
+                    'success' => false,
+                    'message' => 'Ya existe un usuario con ese correo o teléfono'
+                ];
+            }
+
             return [
                 'success' => false,
-                'message' => 'Error al crear el usuario'
+                'message' => 'Error al crear el usuario: ' . $errorMessage
             ];
         }
     }
@@ -145,29 +167,64 @@ class Usuario {
         ];
     }
     
-    /**
-     * Obtener todos los usuarios
-     */
-    public function obtenerTodos() {
-        $query = "SELECT u.id, u.correo, u.nombre, u.apellido, u.telefono, u.direccion, 
-                         u.activo, u.created_at, r.nombre as rol_nombre 
-                  FROM " . $this->tabla . " u 
-                  JOIN roles r ON u.rol_id = r.id 
-                  ORDER BY u.created_at DESC";
-        
-        $resultado = $this->conexion->query($query);
-        
-        if (!$resultado) {
-            return [];
+            /**
+         * Obtener todos los usuarios (con búsqueda opcional)
+         * @param string|null $search Texto de búsqueda (aplica a correo, nombre, apellido, telefono)
+                * @return array
+                */
+            public function obtenerTodos($search = null, $limit = 10, $offset = 0) {
+            $baseQuery = "SELECT u.id, u.correo, u.nombre, u.apellido, u.telefono, u.direccion, 
+                                u.activo, u.created_at, r.nombre as rol_nombre 
+                        FROM " . $this->tabla . " u 
+                        JOIN roles r ON u.rol_id = r.id ";
+
+            if ($search && strlen(trim($search)) > 0) {
+                $like = '%' . $search . '%';
+                $query = $baseQuery . " WHERE (u.correo LIKE ? OR u.nombre LIKE ? OR u.apellido LIKE ? OR u.telefono LIKE ?) 
+                                        ORDER BY u.created_at DESC 
+                                        LIMIT ? OFFSET ?";
+                $stmt = $this->conexion->prepare($query);
+                $stmt->bind_param("ssssii", $like, $like, $like, $like, $limit, $offset);
+                $stmt->execute();
+                $resultado = $stmt->get_result();
+            } else {
+                $query = $baseQuery . " ORDER BY u.created_at DESC LIMIT ? OFFSET ?";
+                $stmt = $this->conexion->prepare($query);
+                $stmt->bind_param("ii", $limit, $offset);
+                $stmt->execute();
+                $resultado = $stmt->get_result();
+            }
+
+            $usuarios = [];
+            while ($fila = $resultado->fetch_assoc()) {
+                $usuarios[] = $fila;
+            }
+
+            return $usuarios;
         }
-        
-        $usuarios = [];
-        while ($fila = $resultado->fetch_assoc()) {
-            $usuarios[] = $fila;
+
+        /**
+         * Contar total de usuarios (para paginación)
+         */
+        public function contarTodos($search = null) {
+            $query = "SELECT COUNT(*) as total FROM " . $this->tabla;
+            if ($search && strlen(trim($search)) > 0) {
+                $query .= " WHERE correo LIKE ? OR nombre LIKE ? OR apellido LIKE ? OR telefono LIKE ?";
+                $stmt = $this->conexion->prepare($query);
+                $like = '%' . $search . '%';
+                $stmt->bind_param("ssss", $like, $like, $like, $like);
+                $stmt->execute();
+                $resultado = $stmt->get_result();
+            } else {
+                $resultado = $this->conexion->query($query);
+            }
+
+            if ($fila = $resultado->fetch_assoc()) {
+                return (int)$fila['total'];
+            }
+            return 0;
         }
-        
-        return $usuarios;
-    }
+
     
     /**
      * Obtener un usuario por ID
@@ -205,6 +262,13 @@ class Usuario {
             return [
                 'success' => false,
                 'message' => 'El correo electrónico ya está registrado'
+            ];
+        }
+
+        if ($usuarioActual['telefono'] !== $this->telefono && $this->telefonoExiste($this->telefono, $id)) {
+            return [
+                'success' => false,
+                'message' => 'El teléfono ya está registrado'
             ];
         }
         
@@ -351,5 +415,31 @@ class Usuario {
             ];
         }
     }
+    /**
+ * Verificar si un teléfono ya existe
+ */
+private function telefonoExiste($telefono, $excluirId = null) {
+    $query = "SELECT id FROM " . $this->tabla . " WHERE telefono = ?";
+
+    if ($excluirId) {
+        $query .= " AND id != ?";
+    }
+
+    $stmt = $this->conexion->prepare($query);
+    if (!$stmt) {
+        return false; // en caso de error consideramos que no existe (el caller debe manejar)
+    }
+
+    if ($excluirId) {
+        $stmt->bind_param("si", $telefono, $excluirId);
+    } else {
+        $stmt->bind_param("s", $telefono);
+    }
+
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+
+    return $resultado->num_rows > 0;
+}
 }
 ?>

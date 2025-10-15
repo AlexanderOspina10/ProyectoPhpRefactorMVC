@@ -12,7 +12,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="<?php echo baseUrl('admin/usuarios'); ?>">
+            <a class="navbar-brand" href="<?php echo baseUrl('admin'); ?>">
                 <i class="bi bi-shop"></i> Fashion Store
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -21,12 +21,28 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
+                        <a class="nav-link" href="<?php echo baseUrl('admin'); ?>">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
                         <a class="nav-link" href="<?php echo baseUrl('admin/usuarios'); ?>">
                             <i class="bi bi-people"></i> Usuarios
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?php echo baseUrl('admin/productos'); ?>">
+                            <i class="bi bi-archive-fill"></i> Productos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?php echo baseUrl('admin/pedidos'); ?>">
+                            <i class="bi bi-card-checklist"></i> Pedidos
+                        </a>
+                    </li>
                 </ul>
-                <ul class="navbar-nav">
+                                <ul class="navbar-nav">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
                             <i class="bi bi-person-circle"></i> <?php echo e($_SESSION['usuario_nombre']); ?>

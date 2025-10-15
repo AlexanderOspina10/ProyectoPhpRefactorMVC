@@ -1,0 +1,273 @@
+/* Estilos para páginas de pedidos */
+.finalizar-pedido .card,
+.mis-pedidos .card,
+.detalle-pedido .card {
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.finalizar-pedido .card:hover,
+.mis-pedidos .card:hover,
+.detalle-pedido .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+}
+
+.finalizar-pedido .table th,
+.mis-pedidos .table th,
+.detalle-pedido .table th {
+    border-top: none;
+    font-weight: 600;
+    color: #495057;
+    background-color: #f8f9fa;
+}
+
+.finalizar-pedido .form-control:read-only {
+    background-color: #f8f9fa;
+    border-color: #e9ecef;
+    color: #6c757d;
+}
+
+.finalizar-pedido .sticky-sidebar {
+    position: sticky;
+    top: 100px;
+    z-index: 1020;
+}
+
+.finalizar-pedido .btn-success {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.finalizar-pedido .btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+}
+
+.finalizar-pedido .alert-info {
+    border-left: 4px solid #17a2b8;
+}
+
+/* Sección de ayuda mejorada */
+.finalizar-pedido .bi-whatsapp {
+    color: #25D366 !important;
+}
+
+.finalizar-pedido .bi-envelope {
+    color: #007bff !important;
+}
+
+.finalizar-pedido .bi-clock {
+    color: #ffc107 !important;
+}
+
+/* Badges de estado */
+.badge-estado {
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+}
+
+.badge-pendiente {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.badge-procesando {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.badge-enviado {
+    background-color: #cce7ff;
+    color: #004085;
+    border: 1px solid #b3d7ff;
+}
+
+.badge-completado {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.badge-cancelado {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Responsive mejorado */
+@media (max-width: 992px) {
+    .finalizar-pedido .sticky-sidebar {
+        position: static;
+        margin-top: 2rem;
+    }
+    
+    .finalizar-pedido .col-lg-8 {
+        order: 2;
+    }
+    
+    .finalizar-pedido .col-lg-4 {
+        order: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .finalizar-pedido .table-responsive,
+    .mis-pedidos .table-responsive,
+    .detalle-pedido .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .finalizar-pedido .card-body .row .col-md-4 {
+        margin-bottom: 1rem;
+    }
+    
+    .finalizar-pedido .btn-success {
+        padding: 12px 20px;
+        font-size: 1rem;
+    }
+    
+    .finalizar-pedido .sticky-sidebar .card {
+        margin-bottom: 1.5rem;
+    }
+}
+
+/* Mejoras visuales para tablas */
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+/* Espaciado mejorado */
+.finalizar-pedido .card-header {
+    border-bottom: 2px solid rgba(0,0,0,0.1);
+}
+
+.finalizar-pedido .form-text {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+/* Iconos de contacto */
+.contact-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    margin-right: 12px;
+}
+
+.contact-icon.whatsapp {
+    background-color: rgba(37, 211, 102, 0.1);
+}
+
+.contact-icon.email {
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.contact-icon.clock {
+    background-color: rgba(255, 193, 7, 0.1);
+}
+
+.finalizar-pedido .card {
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.finalizar-pedido .table th {
+    border-top: none;
+    font-weight: 600;
+    color: #495057;
+    background-color: #f8f9fa;
+}
+
+.finalizar-pedido .form-control:read-only {
+    background-color: #f8f9fa;
+    border-color: #e9ecef;
+    color: #6c757d;
+}
+
+.finalizar-pedido .sticky-sidebar {
+    position: sticky;
+    top: 100px;
+    z-index: 1020;
+}
+
+.finalizar-pedido .btn-success {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.finalizar-pedido .btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+}
+
+.finalizar-pedido .alert-info {
+    border-left: 4px solid #17a2b8;
+}
+
+/* Sección de ayuda mejorada */
+.finalizar-pedido .bi-whatsapp {
+    color: #25D366 !important;
+}
+
+.finalizar-pedido .bi-envelope {
+    color: #007bff !important;
+}
+
+.finalizar-pedido .bi-clock {
+    color: #ffc107 !important;
+}
+
+/* Responsive mejorado */
+@media (max-width: 992px) {
+    .finalizar-pedido .sticky-sidebar {
+        position: static;
+        margin-top: 2rem;
+    }
+    
+    .finalizar-pedido .col-lg-8 {
+        order: 2;
+    }
+    
+    .finalizar-pedido .col-lg-4 {
+        order: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .finalizar-pedido .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .finalizar-pedido .card-body .row .col-md-4 {
+        margin-bottom: 1rem;
+    }
+    
+    .finalizar-pedido .btn-success {
+        padding: 12px 20px;
+        font-size: 1rem;
+    }
+}
+
+/* Mejoras visuales */
+.finalizar-pedido .form-text {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.finalizar-pedido .card-header {
+    border-bottom: 2px solid rgba(0,0,0,0.1);
+}
+
+.finalizar-pedido .table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}

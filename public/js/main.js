@@ -1,96 +1,98 @@
-/**
- * JavaScript principal de Fashion Store
- * Maneja validaciones y funcionalidades del lado del cliente
- */
+const scrollToTopButton = document.createElement('button');
+scrollToTopButton.className = 'scroll-to-top';
+scrollToTopButton.innerHTML = '<i class="bi bi-chevron-up"></i>';
+scrollToTopButton.setAttribute('aria-label', 'Volver arriba');
+document.body.appendChild(scrollToTopButton);
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Inicializar tooltips de Bootstrap
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltipTriggerList.map(function(tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
+// Mostrar/ocultar botón al hacer scroll
+window.addEventListener('scroll', () => {
+  if (window.pageYOffset > 300) {
+    scrollToTopButton.classList.add('show');
+  } else {
+    scrollToTopButton.classList.remove('show');
+  }
 });
 
-/**
- * Validación de formularios
- */
-function validarFormulario(formulario) {
-    if (!formulario.checkValidity() === false) {
-        event.preventDefault();
-        event.stopPropagation();
+// Función para volver arriba
+scrollToTopButton.addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+});
+
+// Efecto de aparición suave para elementos del footer
+const observerOptions = {
+  threshold: 0.1,
+  rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.animationPlayState = 'running';
     }
-    formulario.classList.add('was-validated');
-}
+  });
+}, observerOptions);
 
-/**
- * Confirmar eliminación
- */
-function confirmarEliminacion() {
-    return confirm('¿Estás seguro de que deseas eliminar este registro? Esta acción no se puede deshacer.');
-}
+// Observar elementos del footer
+document.addEventListener('DOMContentLoaded', () => {
+  const footerItems = document.querySelectorAll('.footer-item');
+  footerItems.forEach(item => {
+    item.style.animationPlayState = 'paused';
+    observer.observe(item);
+  });
+});
 
-/**
- * Limpiar formulario
- */
-function limpiarFormulario(formularioId) {
-    const formulario = document.getElementById(formularioId);
-    if (formulario) {
-        formulario.reset();
-        formulario.classList.remove('was-validated');
-    }
-}
-
-/**
- * Mostrar/Ocultar contraseña
- */
 document.addEventListener('DOMContentLoaded', function() {
-    const togglePassword = document.querySelectorAll('.toggle-password');
+    const header = document.querySelector('.header');
     
-    togglePassword.forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            const input = this.previousElementSibling;
-            const icon = this.querySelector('i');
-            
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.remove('bi-eye');
-                icon.classList.add('bi-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.remove('bi-eye-slash');
-                icon.classList.add('bi-eye');
+    function updateHeaderOnScroll() {
+        if (window.scrollY > 20) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    }
+    
+    // Initial check
+    updateHeaderOnScroll();
+    
+    // Listen to scroll events with throttling
+    let ticking = false;
+    window.addEventListener('scroll', function() {
+        if (!ticking) {
+            requestAnimationFrame(function() {
+                updateHeaderOnScroll();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+    
+    // Close mobile menu when clicking on a link
+    const mobileMenuLinks = document.querySelectorAll('#mobileMenu a');
+    mobileMenuLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            if (mobileMenu.classList.contains('show')) {
+                bootstrap.Collapse.getInstance(mobileMenu).hide();
             }
         });
     });
-});
 
-/**
- * Validar teléfono en tiempo real
- */
-document.addEventListener('DOMContentLoaded', function() {
-    const inputTelefono = document.querySelectorAll('input[type="tel"]');
-    
-    inputTelefono.forEach(function(input) {
-        input.addEventListener('input', function() {
-            this.value = this.value.replace(/[^0-9]/g, '');
+    // Mejorar la experiencia del dropdown
+    const profileDropdown = document.getElementById('perfilMenu');
+    if (profileDropdown) {
+        profileDropdown.addEventListener('shown.bs.dropdown', function () {
+            this.classList.add('show');
         });
-    });
+        
+        profileDropdown.addEventListener('hidden.bs.dropdown', function () {
+            this.classList.remove('show');
+        });
+    }
 });
 
-/**
- * Mostrar alerta de confirmación
- */
-function mostrarAlerta(mensaje, tipo = 'info') {
-    const alertContainer = document.createElement('div');
-    alertContainer.className = 'alert alert-' + tipo + ' alert-dismissible fade show';
-    alertContainer.role = 'alert';
-    alertContainer.innerHTML = `
-        ${mensaje}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
-    
-    const contenedor = document.querySelector('.container');
-    if (contenedor) {
-        contenedor.insertBefore(alertContainer, contenedor.firstChild);
-    }
-}
+
+

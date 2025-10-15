@@ -2,7 +2,7 @@
 
     <footer class="bg-dark text-white mt-5 py-4">
         <div class="container text-center">
-            <p class="mb-0">&copy; 2024 Fashion Store. Todos los derechos reservados.</p>
+            <p class="mb-0">&copy; 2025 Fashion Store.</p>
         </div>
     </footer>
     

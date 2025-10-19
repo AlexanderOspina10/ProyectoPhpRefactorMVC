@@ -70,6 +70,21 @@
                             <strong><?php echo e($mensaje['nombre']); ?></strong>
                             <br>
                             <small class="text-muted"><?php echo e($mensaje['correo']); ?></small>
+                            <?php if ($mensaje['usuario_id']): ?>
+                                <br>
+                                <span class="badge bg-success">
+                                    <i class="bi bi-person-check me-1"></i>Usuario registrado
+                                </span>
+                                <?php if ($mensaje['usuario_nombre']): ?>
+                                    <br>
+                                    <small class="text-info">(<?php echo e($mensaje['usuario_nombre']); ?>)</small>
+                                <?php endif; ?>
+                            <?php else: ?>
+                                <br>
+                                <span class="badge bg-secondary">
+                                    <i class="bi bi-person-x me-1"></i>No registrado
+                                </span>
+                            <?php endif; ?>
                         </div>
                     </td>
                     <td>

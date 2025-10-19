@@ -31,6 +31,22 @@
                                 <?php echo e($mensaje['correo']); ?>
                             </a>
                         </p>
+                        <?php if ($mensaje['usuario_id']): ?>
+                            <p class="mb-0 mt-2">
+                                <span class="badge bg-success">
+                                    <i class="bi bi-person-check me-1"></i>Usuario registrado
+                                </span>
+                                <?php if ($mensaje['usuario_nombre']): ?>
+                                    <small class="text-info ms-2">(<?php echo e($mensaje['usuario_nombre']); ?>)</small>
+                                <?php endif; ?>
+                            </p>
+                        <?php else: ?>
+                            <p class="mb-0 mt-2">
+                                <span class="badge bg-secondary">
+                                    <i class="bi bi-person-x me-1"></i>No registrado
+                                </span>
+                            </p>
+                        <?php endif; ?>
                     </div>
                     <div class="col-md-6">
                         <h6 class="text-muted">Información</h6>
@@ -91,6 +107,9 @@
                 <div class="small text-muted">
                     <p><strong>ID del mensaje:</strong> #<?php echo $mensaje['id']; ?></p>
                     <p><strong>Longitud del mensaje:</strong> <?php echo strlen($mensaje['mensaje']); ?> caracteres</p>
+                    <p><strong>Tipo de remitente:</strong> 
+                        <?php echo $mensaje['usuario_id'] ? 'Usuario registrado' : 'Visitante no registrado'; ?>
+                    </p>
                     
                     <?php if ($mensaje['leido']): ?>
                         <p class="text-success">

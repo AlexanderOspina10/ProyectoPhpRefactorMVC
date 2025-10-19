@@ -9,6 +9,7 @@ class Contacto {
     private $tabla = 'mensajes_contacto';
     
     public $id;
+    public $usuario_id;
     public $nombre;
     public $correo;
     public $asunto;
@@ -25,8 +26,8 @@ class Contacto {
      */
     public function crear() {
         $query = "INSERT INTO " . $this->tabla . " 
-                  (nombre, correo, asunto, mensaje) 
-                  VALUES (?, ?, ?, ?)";
+                  (nombre, correo, asunto, mensaje, usuario_id) 
+                  VALUES (?, ?, ?, ?, ?)";
         
         $stmt = $this->conexion->prepare($query);
         
@@ -38,11 +39,12 @@ class Contacto {
         }
         
         $stmt->bind_param(
-            "ssss",
+            "ssssi",
             $this->nombre,
             $this->correo,
             $this->asunto,
-            $this->mensaje
+            $this->mensaje,
+            $this->usuario_id
         );
         
         if ($stmt->execute()) {
@@ -63,8 +65,10 @@ class Contacto {
      * Obtener todos los mensajes (para admin)
      */
     public function obtenerTodos($limit = 10, $offset = 0) {
-        $query = "SELECT * FROM " . $this->tabla . " 
-                  ORDER BY created_at DESC 
+        $query = "SELECT mc.*, u.nombre as usuario_nombre, u.correo as usuario_correo 
+                  FROM " . $this->tabla . " mc 
+                  LEFT JOIN usuarios u ON mc.usuario_id = u.id
+                  ORDER BY mc.created_at DESC 
                   LIMIT ? OFFSET ?";
         
         $stmt = $this->conexion->prepare($query);
@@ -84,24 +88,25 @@ class Contacto {
      * Obtener todos los mensajes con búsqueda
      */
     public function obtenerTodosConBusqueda($search = null, $limit = 10, $offset = 0) {
-        $baseQuery = "SELECT * FROM " . $this->tabla;
+        $baseQuery = "SELECT mc.*, u.nombre as usuario_nombre, u.correo as usuario_correo 
+                      FROM " . $this->tabla . " mc 
+                      LEFT JOIN usuarios u ON mc.usuario_id = u.id";
         
         if ($search && strlen(trim($search)) > 0) {
             $like = '%' . $search . '%';
-            $query = $baseQuery . " WHERE (nombre LIKE ? OR correo LIKE ? OR asunto LIKE ? OR mensaje LIKE ?) 
-                                    ORDER BY created_at DESC 
+            $query = $baseQuery . " WHERE (mc.nombre LIKE ? OR mc.correo LIKE ? OR mc.asunto LIKE ? OR mc.mensaje LIKE ?) 
+                                    ORDER BY mc.created_at DESC 
                                     LIMIT ? OFFSET ?";
             $stmt = $this->conexion->prepare($query);
             $stmt->bind_param("ssssii", $like, $like, $like, $like, $limit, $offset);
-            $stmt->execute();
-            $resultado = $stmt->get_result();
         } else {
-            $query = $baseQuery . " ORDER BY created_at DESC LIMIT ? OFFSET ?";
+            $query = $baseQuery . " ORDER BY mc.created_at DESC LIMIT ? OFFSET ?";
             $stmt = $this->conexion->prepare($query);
             $stmt->bind_param("ii", $limit, $offset);
-            $stmt->execute();
-            $resultado = $stmt->get_result();
         }
+        
+        $stmt->execute();
+        $resultado = $stmt->get_result();
         
         $mensajes = [];
         while ($fila = $resultado->fetch_assoc()) {
@@ -115,7 +120,10 @@ class Contacto {
      * Obtener un mensaje por ID
      */
     public function obtenerPorId($id) {
-        $query = "SELECT * FROM " . $this->tabla . " WHERE id = ?";
+        $query = "SELECT mc.*, u.nombre as usuario_nombre, u.correo as usuario_correo 
+                  FROM " . $this->tabla . " mc 
+                  LEFT JOIN usuarios u ON mc.usuario_id = u.id 
+                  WHERE mc.id = ?";
         
         $stmt = $this->conexion->prepare($query);
         $stmt->bind_param("i", $id);
@@ -194,6 +202,24 @@ class Contacto {
     }
     
     /**
+     * Contar mensajes por tipo de usuario
+     */
+    public function contarPorTipoUsuario($usuarioRegistrado = true) {
+        if ($usuarioRegistrado) {
+            $query = "SELECT COUNT(*) as total FROM " . $this->tabla . " WHERE usuario_id IS NOT NULL";
+        } else {
+            $query = "SELECT COUNT(*) as total FROM " . $this->tabla . " WHERE usuario_id IS NULL";
+        }
+        
+        $resultado = $this->conexion->query($query);
+        
+        if ($fila = $resultado->fetch_assoc()) {
+            return (int)$fila['total'];
+        }
+        return 0;
+    }
+    
+    /**
      * Eliminar mensaje
      */
     public function eliminar($id) {
@@ -208,9 +234,11 @@ class Contacto {
      * Obtener mensajes no leídos para el dashboard
      */
     public function obtenerNoLeidos($limit = 5) {
-        $query = "SELECT * FROM " . $this->tabla . " 
-                  WHERE leido = 0 
-                  ORDER BY created_at DESC 
+        $query = "SELECT mc.*, u.nombre as usuario_nombre 
+                  FROM " . $this->tabla . " mc 
+                  LEFT JOIN usuarios u ON mc.usuario_id = u.id 
+                  WHERE mc.leido = 0 
+                  ORDER BY mc.created_at DESC 
                   LIMIT ?";
         
         $stmt = $this->conexion->prepare($query);

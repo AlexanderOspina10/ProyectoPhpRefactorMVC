@@ -616,30 +616,65 @@ $q = $q ?? '';
       
       <div class="col-lg-8">
         <div class="contact-form bg-white rounded-3 p-4 p-md-5 shadow-sm">
-          <form action="<?php echo baseUrl('contacto/enviar'); ?>" method="post" role="form" class="php-email-form">
-            <!-- Agregar token CSRF si lo usas -->
-            <?php if (function_exists('generarTokenCSRF')): ?>
-              <input type="hidden" name="csrf_token" value="<?php echo generarTokenCSRF(); ?>">
-            <?php endif; ?>
-            
-            <div class="row">
-              <div class="col-md-6 form-group mb-3">
-                <input type="text" name="name" class="form-control rounded-pill" id="Nombre" placeholder="Nombre" required>
+          <?php if (isset($_SESSION['usuario_id']) && !empty($_SESSION['usuario_id'])): ?>
+            <!-- Usuario logueado - mostrar formulario -->
+            <form action="<?php echo baseUrl('contacto/enviar'); ?>" method="post" role="form" class="php-email-form">
+              <!-- Agregar token CSRF si lo usas -->
+              <?php if (function_exists('generarTokenCSRF')): ?>
+                <input type="hidden" name="csrf_token" value="<?php echo generarTokenCSRF(); ?>">
+              <?php endif; ?>
+              
+              <div class="alert alert-info mb-4">
+                <i class="bi bi-person-check me-2"></i>
+                Estás enviando el mensaje como usuario registrado. 
+                Tu mensaje quedará asociado a tu cuenta.
               </div>
-              <div class="col-md-6 form-group mb-3">
-                <input type="email" class="form-control rounded-pill" name="email" id="Correo" placeholder="Correo" required>
+              
+              <div class="row">
+                <div class="col-md-6 form-group mb-3">
+                  <input type="text" name="name" class="form-control rounded-pill" id="Nombre" 
+                         placeholder="Nombre" required 
+                         value="<?php echo e($_SESSION['usuario_nombre'] ?? ''); ?>">
+                </div>
+                <div class="col-md-6 form-group mb-3">
+                  <input type="email" class="form-control rounded-pill" name="email" id="Correo" 
+                         placeholder="Correo" required 
+                         value="<?php echo e($_SESSION['usuario_correo'] ?? ''); ?>">
+                </div>
+              </div>
+              <div class="form-group mb-3">
+                <input type="text" class="form-control rounded-pill" name="Asunto" id="Asunto" placeholder="Asunto" required>
+              </div>
+              <div class="form-group mb-4">
+                <textarea class="form-control rounded-3" name="Mensaje" rows="5" placeholder="Mensaje" required></textarea>
+              </div>
+              <div class="text-center">
+                <button type="submit" class="btn btn-primary btn-lg px-5 rounded-pill">
+                  <i class="bi bi-send me-2"></i>Enviar Mensaje
+                </button>
+              </div>
+            </form>
+          <?php else: ?>
+            <!-- Usuario no logueado - mostrar mensaje para iniciar sesión -->
+            <div class="text-center py-5">
+              <div class="mb-4">
+                <i class="bi bi-person-x display-1 text-muted"></i>
+              </div>
+              <h4 class="fw-bold text-dark mb-3">Inicia sesión para contactarnos</h4>
+              <p class="text-muted mb-4">
+                Para enviar un mensaje de contacto, necesitas estar registrado en nuestro sistema.
+                Esto nos permite brindarte un mejor servicio y seguimiento a tus consultas.
+              </p>
+              <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a href="<?php echo baseUrl('login'); ?>" class="btn btn-primary btn-lg px-4 rounded-pill">
+                  <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+                </a>
+                <a href="<?php echo baseUrl('registro'); ?>" class="btn btn-outline-primary btn-lg px-4 rounded-pill">
+                  <i class="bi bi-person-plus me-2"></i>Registrarse
+                </a>
               </div>
             </div>
-            <div class="form-group mb-3">
-              <input type="text" class="form-control rounded-pill" name="Asunto" id="Asunto" placeholder="Asunto" required>
-            </div>
-            <div class="form-group mb-4">
-              <textarea class="form-control rounded-3" name="Mensaje" rows="5" placeholder="Mensaje" required></textarea>
-            </div>
-            <div class="text-center">
-              <button type="submit" class="btn btn-primary btn-lg px-5 rounded-pill">Enviar Mensaje</button>
-            </div>
-          </form>
+          <?php endif; ?>
         </div>
       </div>
     </div>

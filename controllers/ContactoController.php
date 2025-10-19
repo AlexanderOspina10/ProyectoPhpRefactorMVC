@@ -20,73 +20,79 @@ class ContactoController {
     }
     
     /**
- * Procesar formulario de contacto
- */
-public function enviarMensaje() {
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        setMensaje('Método no permitido', 'error');
-        redirect(''); // Redirigir a la página principal
-    }
-    
-    // Validar token CSRF si lo tienes implementado
-    if (function_exists('verificarTokenCSRF') && isset($_POST['csrf_token']) && !verificarTokenCSRF($_POST['csrf_token'])) {
-        setMensaje('Token de seguridad inválido', 'error');
-        redirect(''); // Redirigir a la página principal
-    }
-    
-    // Limpiar y validar datos
-    $nombre = limpiarInput($_POST['name'] ?? '');
-    $correo = limpiarInput($_POST['email'] ?? '');
-    $asunto = limpiarInput($_POST['Asunto'] ?? '');
-    $mensaje = limpiarInput($_POST['Mensaje'] ?? '');
-    
-    // Validaciones básicas
-    if (empty($nombre) || empty($correo) || empty($asunto) || empty($mensaje)) {
-        setMensaje('Por favor completa todos los campos', 'error');
-        redirect(''); // Redirigir a la página principal
-    }
-    
-    if (!esEmailValido($correo)) {
-        setMensaje('El correo electrónico no es válido', 'error');
-        redirect(''); // Redirigir a la página principal
-    }
-    
-    if (strlen($mensaje) < 10) {
-        setMensaje('El mensaje debe tener al menos 10 caracteres', 'error');
-        redirect(''); // Redirigir a la página principal
-    }
-    
-    if (strlen($nombre) < 2) {
-        setMensaje('El nombre debe tener al menos 2 caracteres', 'error');
-        redirect(''); // Redirigir a la página principal
-    }
-    
-    if (strlen($asunto) < 5) {
-        setMensaje('El asunto debe tener al menos 5 caracteres', 'error');
-        redirect(''); // Redirigir a la página principal
-    }
-    
-    // Asignar datos al modelo
-    $this->contactoModel->nombre = $nombre;
-    $this->contactoModel->correo = $correo;
-    $this->contactoModel->asunto = $asunto;
-    $this->contactoModel->mensaje = $mensaje;
-    
-    // Guardar en base de datos
-    $resultado = $this->contactoModel->crear();
-    
-    if ($resultado['success']) {
-        // Opcional: Enviar email de notificación
-        $this->enviarEmailNotificacion($nombre, $correo, $asunto, $mensaje);
+     * Procesar formulario de contacto (solo usuarios registrados)
+     */
+    public function enviarMensaje() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            setMensaje('Método no permitido', 'error');
+            redirect('');
+        }
         
-        setMensaje('¡Mensaje enviado exitosamente! Te contactaremos pronto.', 'success');
-    } else {
-        setMensaje('Error al enviar el mensaje. Por favor intenta nuevamente.', 'error');
+        // Verificar que el usuario está logueado
+        if (!isset($_SESSION['usuario_id']) || empty($_SESSION['usuario_id'])) {
+            setMensaje('Debes iniciar sesión para enviar un mensaje', 'error');
+            redirect('auth/login');
+        }
+        
+        // Validar token CSRF si lo tienes implementado
+        if (function_exists('verificarTokenCSRF') && isset($_POST['csrf_token']) && !verificarTokenCSRF($_POST['csrf_token'])) {
+            setMensaje('Token de seguridad inválido', 'error');
+            redirect('');
+        }
+        
+        // Limpiar y validar datos
+        $nombre = limpiarInput($_POST['name'] ?? '');
+        $correo = limpiarInput($_POST['email'] ?? '');
+        $asunto = limpiarInput($_POST['Asunto'] ?? '');
+        $mensaje = limpiarInput($_POST['Mensaje'] ?? '');
+        
+        // Validaciones básicas
+        if (empty($nombre) || empty($correo) || empty($asunto) || empty($mensaje)) {
+            setMensaje('Por favor completa todos los campos', 'error');
+            redirect('');
+        }
+        
+        if (!esEmailValido($correo)) {
+            setMensaje('El correo electrónico no es válido', 'error');
+            redirect('');
+        }
+        
+        if (strlen($mensaje) < 10) {
+            setMensaje('El mensaje debe tener al menos 10 caracteres', 'error');
+            redirect('');
+        }
+        
+        if (strlen($nombre) < 2) {
+            setMensaje('El nombre debe tener al menos 2 caracteres', 'error');
+            redirect('');
+        }
+        
+        if (strlen($asunto) < 5) {
+            setMensaje('El asunto debe tener al menos 5 caracteres', 'error');
+            redirect('');
+        }
+        
+        // Asignar datos al modelo (incluyendo el usuario_id)
+        $this->contactoModel->nombre = $nombre;
+        $this->contactoModel->correo = $correo;
+        $this->contactoModel->asunto = $asunto;
+        $this->contactoModel->mensaje = $mensaje;
+        $this->contactoModel->usuario_id = $_SESSION['usuario_id'];
+        
+        // Guardar en base de datos
+        $resultado = $this->contactoModel->crear();
+        
+        if ($resultado['success']) {
+            // Opcional: Enviar email de notificación
+            $this->enviarEmailNotificacion($nombre, $correo, $asunto, $mensaje);
+            
+            setMensaje('¡Mensaje enviado exitosamente! Te contactaremos pronto.', 'success');
+        } else {
+            setMensaje('Error al enviar el mensaje. Por favor intenta nuevamente.', 'error');
+        }
+        
+        redirect('');
     }
-    
-    // SIEMPRE redirigir a la página principal después de procesar
-    redirect('');
-}
     
     /**
      * Enviar email de notificación (opcional)
@@ -107,6 +113,7 @@ public function enviarMensaje() {
                 .content { background: #f8f9fa; padding: 20px; border-radius: 0 0 5px 5px; }
                 .field { margin-bottom: 10px; }
                 .label { font-weight: bold; color: #495057; }
+                .user-badge { background: #28a745; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; }
             </style>
         </head>
         <body>
@@ -115,6 +122,9 @@ public function enviarMensaje() {
                     <h2>Nuevo mensaje de contacto</h2>
                 </div>
                 <div class='content'>
+                    <div class='field'>
+                        <span class='user-badge'>Usuario Registrado</span>
+                    </div>
                     <div class='field'>
                         <span class='label'>Nombre:</span> $nombre
                     </div>
@@ -131,7 +141,7 @@ public function enviarMensaje() {
                         </div>
                     </div>
                     <br>
-                    <p><em>Este mensaje fue enviado desde el formulario de contacto de Fashion Store.</em></p>
+                    <p><em>Este mensaje fue enviado desde el formulario de contacto de Fashion Store por un usuario registrado.</em></p>
                 </div>
             </div>
         </body>
@@ -144,7 +154,7 @@ public function enviarMensaje() {
         $cabeceras .= "From: Fashion Store <no-reply@fashionstore.com>" . "\r\n";
         $cabeceras .= "Reply-To: $correo" . "\r\n";
         
-        // Enviar email (puedes usar PHPMailer o similar para mejor funcionalidad)
+        // Enviar email
         @mail($para, $titulo, $cuerpo, $cabeceras);
     }
 }
@@ -209,7 +219,7 @@ class AdminContactoController {
         // Marcar como leído si no lo está
         if (!$mensaje['leido']) {
             $this->contactoModel->marcarLeido($id);
-            $mensaje['leido'] = 1; // Actualizar localmente para la vista
+            $mensaje['leido'] = 1;
         }
         
         $titulo = 'Ver Mensaje - ' . $mensaje['asunto'];
@@ -222,7 +232,6 @@ class AdminContactoController {
      * Eliminar mensaje
      */
     public function eliminar($id) {
-        // Verificar que el mensaje existe
         $mensaje = $this->contactoModel->obtenerPorId($id);
         
         if (!$mensaje) {
@@ -270,6 +279,8 @@ class AdminContactoController {
         return [
             'totalMensajes' => $this->contactoModel->contarTodos(),
             'mensajesNoLeidos' => $this->contactoModel->contarNoLeidos(),
+            'mensajesUsuariosRegistrados' => $this->contactoModel->contarPorTipoUsuario(true),
+            'mensajesUsuariosNoRegistrados' => $this->contactoModel->contarPorTipoUsuario(false),
             'ultimosMensajes' => $this->contactoModel->obtenerNoLeidos(5)
         ];
     }
